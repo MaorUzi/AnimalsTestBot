@@ -1,10 +1,25 @@
 // This file use in emailFunc in order to determine for each faliure if to send email or not.
 // The file here is only for example, the real file located in the server.
 
-{"https://anonymous.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0}, 
+{
+ "https://anonymous.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
  "https://etgar22.co.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
  "https://veg.co.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
  "https://animals-now.org/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
  "https://challenge22.com/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0}, 
  "https://fish.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0}, 
- "https://liveact.org/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0}}
+ "https://liveact.org/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://videos.animals-now.org/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://salmon.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://animal.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://rifq.org/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://animals-students.co.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://chicken.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://tnuvacruelty.co.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://sharetheworld.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://cagefree.co.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://www.behemla.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://hayawan.org/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://quizzes.anonymous.org.il/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0},
+ "https://shirahertzanu.com/": {"FamiliarWordError": 0, "ConnectionError": 0, "GibberishError": 0, "CodeError": 0, "LoadTimeError": 0}
+}

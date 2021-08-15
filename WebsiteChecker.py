@@ -12,8 +12,23 @@ animals = "https://animals-now.org/"
 anonymous = "https://anonymous.org.il/"
 veg = 'https://veg.co.il/'
 live_act = 'https://liveact.org/'
+videos = 'https://videos.animals-now.org/'
+salmon = 'https://salmon.org.il/'
+animal = 'https://animal.org.il/'
+rifq = 'https://rifq.org/'
+students = 'https://animals-students.co.il/'
+chicken = 'https://chicken.org.il/'
+tnuva = 'https://tnuvacruelty.co.il/'
+share = 'https://sharetheworld.org.il/'
+cage = 'https://cagefree.co.il/'
+behemla = 'https://www.behemla.org.il/'
+haywan = 'https://hayawan.org/'
+quizzes = 'https://quizzes.anonymous.org.il/'
+shira = 'https://shirahertzanu.com/'
 
-site_list = [etgar, ch, animals, anonymous, veg, live_act, fish]
+site_list = [etgar, ch, animals, anonymous, veg, live_act, fish, videos, salmon, animal, rifq,
+             students, chicken, tnuva, share, cage, behemla, haywan, quizzes, shira]
+
 service = customFunc.auth.get_service_gmail()
 
 header_list = [
@@ -73,12 +88,18 @@ for site in site_list:
     page = request.text  # get the page source code
 
     # Second test search for familiar words in the page, if not found - Fail.
-    if 'animals' not in page:
+
+    # In all of the sites besides animal, behemla and haywan - we have the word animals in the source code.
+    # in animal site there's animal word and in behemla site there's behemla word and in haywan site there's
+    # haywan word in their source code. So with those word we test those specific sites.
+    # so
+    if 'animal' not in page and 'behemla' not in page and 'hayawan' not in page:
         customFunc.emailfunc.web_error_email('FamiliarWordError', service,
                                              'The word "animals" does not found in the page source', site, str(header))
     else:
         customFunc.emailfunc.reset_error_counter('FamiliarWordError', service, site)
         # Third test search for character that always appear in gibberish text, if found - Fail
+
     if '×' in page:
         customFunc.emailfunc.web_error_email('GibberishError', service,
                                              'Gibberish character("×") found in the page', site, str(header))
