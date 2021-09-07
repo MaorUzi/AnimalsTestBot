@@ -7,7 +7,7 @@ from google.auth.transport.requests import Request
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import argparse
-from AnimalsTestBot import emailfunc
+import emailfunc
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--ServiceAccountCreds", default=["None"],
