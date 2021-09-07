@@ -20,9 +20,9 @@ import auth
 # args = parser.parse_args()
 
 
-SERVICE_ACCOUNTS_CREDS_PATH = args.ServiceAccountCreds[0]
-OAUTH2CLIENT_IDS_CREDS_PATH = args.Oauth2ClientCreds[0]
-GMAIL_TOKEN_PATH = args.GmailToken[0]
+# SERVICE_ACCOUNTS_CREDS_PATH = args.ServiceAccountCreds[0]
+# OAUTH2CLIENT_IDS_CREDS_PATH = args.Oauth2ClientCreds[0]
+# GMAIL_TOKEN_PATH = args.GmailToken[0]
 
 # SCOPES_SHEETS = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',
 #                  "https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
