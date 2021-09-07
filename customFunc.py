@@ -135,6 +135,17 @@ class webFunc:
         teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
         teen_checkbox.click()
         
+        
+    def transferred_to_thank_you_page(self):
+        """
+        Check if the bot succeeded to submit the form (by checking if the bot in thank you page)
+        """
+        url = self.driver.current_url
+        if "thank" not in url:
+            print("Current Url: ", url)
+            self.driver.quit()
+            raise Failed_Submit_The_Sign_Up_Form("Didn't transferred to thank you page")
+            
 ################## Petitions ##################        
     def petitions_send(self):
         """
