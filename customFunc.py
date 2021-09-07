@@ -92,6 +92,9 @@ class webFunc:
                 except:
                     print('Failed to send keys to: "{}" (field placeholder)'.format(real_placeholder))
 
+                    
+################## Challenge22, Etgar22 ##################        
+                    
     """
     On challenge22 ES sometimes there is pop up that ask the user to move to the english website,
     this method close this pop up.
@@ -132,7 +135,53 @@ class webFunc:
         teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
         teen_checkbox.click()
         
+################## Petitions ##################        
+    def petitions_send(self):
+        """
+        Click on "Submit/Continue" button in animals-now.org's petitions
+        """
+        send_button = self.driver.find_element_by_css_selector(PageElements.PETITIONS_FORM_SEND_BUTTON_CSS_SELECTOR)
+        # scrolling into view doesn't work in https://animals-now.org/investigations/turkey/?utm_source=test&utm_medium=test&utm_campaign=test
+        # try it - open the console and type this:
+        #   var elem = document.querySelector('div #form_petition-form button.frm_button_submit')
+        #   elem.scrollIntoView(true);
+        # scroll_into_view(self.driver, send_button)
+        send_button.click()
 
+    def add_my_name_to_petition(self):
+        """
+        Some of the times in some petition "add my name to petition" button appear before we can sign up
+        to the petition, this function click on this button.
+        REMOVE THIS FUNCTION WHEN THE A/B TEST IS DONE.
+        """
+        try:
+            button = self.driver.find_element_by_css_selector(PageElements.ADD_MY_NAME_TO_PETITION_BUTTON_CSS_SELECTOR)
+            button.click()
+        except:
+            print('Add my name to petition button not found, this button appear sometimes because its A/B test')
+
+
+    def scroll_into_view(driver, element):
+        print("scrolling into view element with id " + element.id)
+        driver.execute_script("arguments[0].scrollIntoView(true);", element)
+
+
+    def petitions_age(self):
+        """
+        Choose random birthday from the scroll in animals-now.org's petitions
+        """
+        if self.driver.find_element_by_xpath(PageElements.PETITION_HEBREW_AGE_BOX_XPATH):
+            age_box = self.driver.find_element_by_xpath(PageElements.PETITION_HEBREW_AGE_BOX_XPATH)
+        else:
+            age_box = self.driver.find_element_by_xpath(PageElements.PETITION_ENGLISH_AGE_BOX_XPATH)
+
+        age_box.click()
+        select_age = self.driver.find_element_by_xpath(PageElements.PETITION_SELECT_AGE_SCROLL_BAR_XPATH.format(randint(1930, 2004)))
+        select_age.click()
+        self.year_of_birth = select_age
+        
+################## Check if sign up in sheets/gmail ##################        
+     
     def check_in_sheets(self, sheet):
         """
         Some of the signed ups transfer to google sheet, this function check if the registration arrived to
@@ -218,51 +267,6 @@ class webFunc:
             if num_emails_received != 1:
                 emailfunc.signup_failed_email(service, row_status)
             petitions_index += 1
-            
-
-    def petitions_send(self):
-        """
-        Click on "Submit/Continue" button in animals-now.org's petitions
-        """
-        send_button = self.driver.find_element_by_css_selector(PageElements.PETITIONS_FORM_SEND_BUTTON_CSS_SELECTOR)
-        # scrolling into view doesn't work in https://animals-now.org/investigations/turkey/?utm_source=test&utm_medium=test&utm_campaign=test
-        # try it - open the console and type this:
-        #   var elem = document.querySelector('div #form_petition-form button.frm_button_submit')
-        #   elem.scrollIntoView(true);
-        # scroll_into_view(self.driver, send_button)
-        send_button.click()
-
-    def add_my_name_to_petition(self):
-        """
-        Some of the times in some petition "add my name to petition" button appear before we can sign up
-        to the petition, this function click on this button.
-        REMOVE THIS FUNCTION WHEN THE A/B TEST IS DONE.
-        """
-        try:
-            button = self.driver.find_element_by_css_selector(PageElements.ADD_MY_NAME_TO_PETITION_BUTTON_CSS_SELECTOR)
-            button.click()
-        except:
-            print('Add my name to petition button not found, this button appear sometimes because its A/B test')
-
-
-    def scroll_into_view(driver, element):
-        print("scrolling into view element with id " + element.id)
-        driver.execute_script("arguments[0].scrollIntoView(true);", element)
-
-
-    def petitions_age(self):
-        """
-        Choose random birthday from the scroll in animals-now.org's petitions
-        """
-        if self.driver.find_element_by_xpath(PageElements.PETITION_HEBREW_AGE_BOX_XPATH):
-            age_box = self.driver.find_element_by_xpath(PageElements.PETITION_HEBREW_AGE_BOX_XPATH)
-        else:
-            age_box = self.driver.find_element_by_xpath(PageElements.PETITION_ENGLISH_AGE_BOX_XPATH)
-
-        age_box.click()
-        select_age = self.driver.find_element_by_xpath(PageElements.PETITION_SELECT_AGE_SCROLL_BAR_XPATH.format(randint(1930, 2004)))
-        select_age.click()
-        self.year_of_birth = select_age
 
 #     def healthissue(self):
 #         """
