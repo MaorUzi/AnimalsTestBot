@@ -31,6 +31,7 @@ def get_service_sheet():
 
 client = get_service_sheet()
 report_sheet = client.open("Report").sheet1
+print(report_sheet)
 
 
   
