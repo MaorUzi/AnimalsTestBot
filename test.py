@@ -8,8 +8,11 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import argparse
 
+parser = argparse.ArgumentParser()
 parser.add_argument("--ServiceAccountCreds", default=["None"],
 					nargs=1, help="Please Enter Service Account creds path")
+
+args = parser.parse_args()
 
 
 SCOPES_SHEETS = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',
