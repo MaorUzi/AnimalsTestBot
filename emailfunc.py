@@ -3,6 +3,9 @@ from email.mime.text import MIMEText
 from apiclient import errors
 import json
 
+import Setup
+
+ERROR_COUNTER_JSON_PATH = Setup.ERROR_COUNTER_JSON_PATH
 
 def create_message(sender, to, subject, message_text):
     """Create a message for an email.
@@ -51,7 +54,7 @@ def signup_failed_email(service, row):
     message_text = "Sheet\Petition: " + row[1] + "Link: " + row[2] + " Email: " + row[3] + " Reason: " + row[4]
     sender = "me"
     subject = "Sign Up Failed"
-    to_list = ["dev@animals-now.org"]
+    to_list = ["dev@animals-now.org","maor@animals-now.org"]
     user_id = "me"
 
     for to in to_list:
@@ -87,7 +90,7 @@ def web_error_email_no_delay(service, error, site, header):
     message_text = "Error: " + error + ", Website: " + site + ", header: " + header
     sender = "me"
     subject = "WebSite Error"
-    to_list = ["dev@animals-now.org", "maor@animals-now.org"]
+    to_list = ["dev@animals-now.org" ,"maor@animals-now.org"]
     user_id = "me"
 
     for to in to_list:
@@ -110,7 +113,7 @@ def veg_error_email_no_delay_roni(service, error, site, header):
 
 
 
-json_path = '/home/maor_animals_now_org/pytest/error_status.json'
+
 def web_error_email(error_type, service, error, site, header):
     """
     Check if email already sent in the last five sessions. if email already sent,
@@ -123,7 +126,7 @@ def web_error_email(error_type, service, error, site, header):
     """
 
     try:
-        with open(json_path, 'r') as f:
+        with open(ERROR_COUNTER_JSON_PATH, 'r') as f:
             data = json.load(f)
         f.close()
 
@@ -134,12 +137,12 @@ def web_error_email(error_type, service, error, site, header):
                 veg_error_email_no_delay_roni(service, str(error), site, str(header))
             # session to wait between each email
             data[site][error_type] = 1
-            with open(json_path, 'w+') as f:
+            with open(ERROR_COUNTER_JSON_PATH, 'w+') as f:
                 f.write(json.dumps(data))
             f.close()
         else:
             data[site][error_type] = data[site][error_type] - 1
-            with open(json_path, 'w+') as f:
+            with open(ERROR_COUNTER_JSON_PATH, 'w+') as f:
                 f.write(json.dumps(data))
             f.close()
     except:  # if there is trouble with the json file, the email will sent every session
@@ -155,12 +158,12 @@ def reset_error_counter(error_type, service, site):
     Reset the json file error counter when test succeed, each time subtract one from the counter.
     """
     try:
-        with open(json_path, 'r') as f:
+        with open(ERROR_COUNTER_JSON_PATH, 'r') as f:
             data = json.load(f)
         f.close()
         if data[site][error_type] != 0:
             data[site][error_type] = data[site][error_type] - 1
-            with open(json_path, 'w+') as f:
+            with open(ERROR_COUNTER_JSON_PATH, 'w+') as f:
                 f.write(json.dumps(data))
             f.close()
     except:
