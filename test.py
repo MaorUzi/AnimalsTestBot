@@ -28,6 +28,11 @@ def get_service_sheet():
     creds = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNTS_CREDS_PATH, SCOPES_SHEETS)
     client = gspread.authorize(creds)
     return client
+
+client = get_service_sheet()
+report_sheet = client.open("Report").sheet1
+
+
   
   
   
