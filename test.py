@@ -62,12 +62,11 @@ def get_service_gmail():
             flow = InstalledAppFlow.from_client_secrets_file(OAUTH2CLIENT_IDS_CREDS_PATH, SCOPES_GMAIL)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-	with open("/home/maor_animals_now_org/pytest/token.pickle", 'wb') as token:
+        with open("/home/maor_animals_now_org/pytest/token.pickle", 'wb') as token:
             pickle.dump(creds, token)
     service = build('gmail', 'v1', credentials=creds)
 
     return service
-
 
 service = get_service_gmail()
 message_text = "Just a small test"
