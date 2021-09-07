@@ -12,7 +12,7 @@ import emailfunc
 parser = argparse.ArgumentParser()
 parser.add_argument("--ServiceAccountCreds", default=["None"],
 					nargs=1, help="Please Enter Service Account creds path")
-parser.add_argument("--GmailToken", default=["None"],
+parser.add_argument("--GmailToken", default=["/home/maor_animals_now_org/pytest/token.pickle"],
 					nargs=1, help="Please Enter token.pickle path")
 parser.add_argument("--Oauth2ClientCreds", default=["None"],
 					nargs=1, help="Please Enter Oauth2Client creds path")
