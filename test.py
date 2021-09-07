@@ -20,8 +20,10 @@ SCOPES_SHEETS = ["https://spreadsheets.google.com/feeds",'https://www.googleapis
 
 
 SERVICE_ACCOUNTS_CREDS_PATH = args.ServiceAccountCreds[0]
-
+print("################################")
 print(SERVICE_ACCOUNTS_CREDS_PATH)
+print("################################")
+
 def get_service_sheet():
     creds = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNTS_CREDS_PATH, SCOPES_SHEETS)
     client = gspread.authorize(creds)
