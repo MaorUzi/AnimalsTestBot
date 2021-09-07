@@ -8,10 +8,14 @@ from random import randint
 from time import sleep
 
 import emailfunc
+import PageElements
+import Setup
 import sys
 sys.path.append('/home/maor_animals_now_org/pytest')
 import auth
 
+
+CHROMEDRIVER_PATH = Setup.CHROMEDRIVER_PATH
 
 class webFunc:
 
@@ -28,7 +32,6 @@ class webFunc:
         """
         Determine and start the selenium webdriver.
         """
-        CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
         chrome_options = Options()
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--window-size=1920,1080") 
@@ -36,9 +39,9 @@ class webFunc:
         chrome_options.add_argument("--proxy-server='direct://'")
         chrome_options.add_argument("--proxy-bypass-list=*")
         chrome_options.add_argument("--start-maximized")
-        chrome_options.add_argument('--headless')
+    #    chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-gpu')
-   #     chrome_options.add_argument('--disable-dev-shm-usage')
+    #    chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--ignore-certificate-errors')
         self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
@@ -75,19 +78,6 @@ class webFunc:
         The function base on placeholder, if your form doesn't have placeholder,
         it won't work.
         """
-
-        placeholder_dict = {'FirstName': ['פרטי', 'First', 'first', 'Nombre', 'nombre'],
-                            'LastName': ['משפחה', 'Last', 'last', 'Apellido', 'apellido'],
-                            'Email': ['אימייל', 'מייל', 'דוא"ל', 'דואר אלקטרוני', "דוא'ל", 'Email', 'email',
-                                      'Correo electrónico', 'correo electrónico'],
-                            'Phone': ['טלפון', 'נייד', 'Phone', 'phone', 'Mobile', 'mobile', 'Teléfono', 'teléfono',
-                                      'Móvil', 'móvil'],
-                            'Age': ['גיל', 'Age', 'age', 'Años', 'años'],
-                            'Birthday': ['שנת לידה', 'Birthday', 'birthday', 'Year', 'year', 'Cumpleaños', 'cumpleaños'],
-                            'FullName': ['שם מלא', 'שם', 'Full name', 'full name', 'Name', 'name',
-                                         'Nombre completo', 'nombre completo', 'Nombre', 'nombre'],
-                            }
-
         # Find all elements with input tag (in the html <input>....</input>)
         input_elem_list = self.driver.find_elements_by_tag_name('input')
         for elem in input_elem_list:
@@ -95,36 +85,43 @@ class webFunc:
             real_placeholder = elem.get_attribute('placeholder')
             # If any of the item inside placeholder_dict[field] are also inside the real_placeholder,
             # it will send keys to this element(field).
-            if any([plc in real_placeholder for plc in placeholder_dict[field]]):
+            if any([plc in real_placeholder for plc in PageElements.PLACEHOLDER_DICT[field]]):
                 try:
                     elem.send_keys(keys)
                     print('Succeed to send keys to: "{}" (field placeholder)'.format(real_placeholder))
                 except:
                     print('Failed to send keys to: "{}" (field placeholder)'.format(real_placeholder))
 
+    """
+    On challenge22 ES sometimes there is pop up that ask the user to move to the english website,
+    this method close this pop up.
+    """
+    def close_move_to_english_website_pop_up(self):
+        pop_up_close_button = self.driver.find_element_by_css_selector(PageElements.MOVE_TO_EN_POP_UP_CLOSE_BUTTON_CSS_SELECTOR)
+        pop_up_close_button.click()
 
     def send(self):
         """
         Click on "Submit/Continue" button in etgar22.co.il,in challenge22.com and in challenge22.com/es
         """
-        send_button = self.driver.find_element_by_id('tfa_148')
+        send_button = self.driver.find_element_by_id(PageElements.CHALLENGES_FORM_SEND_BUTTON_ID)
         send_button.click()
 
     def etgarconfirm(self):
         """
         Click on "I accept the Term of use" check box in etgar22.co.il
         """
-        confrim_checkbox = self.driver.find_element_by_xpath('//label[@id="tfa_168-L"]')
-        # this function (etgarconfirm) is used by several tests, in some it helps to scroll_into_view and in some it fails the test (i.e Etgar22FormTest.py)
-        # scroll_into_view(self.driver, confrim_checkbox)
-        confrim_checkbox.click()
+        confirm_checkbox = self.driver.find_element_by_xpath(PageElements.ACCEPT_TERM_CHECKBOX_XPATH)
+        # this function (etgarconfirm) is used by several tests, in some it helps to scroll_into_view and in some it
+        # fails the test (i.e Etgar22FormTest.py) scroll_into_view(self.driver, confirm_checkbox)
+        confirm_checkbox.click()
 
     def ch_confirm_sixteen(self):
         """
         Click on "I am 16 or older and have read the Terms of Use" check box
         in challenge22.com and in challenge22.com/es
         """
-        sixteen_checkbox = self.driver.find_element_by_xpath('//label[@id="tfa_93-L"]')
+        sixteen_checkbox = self.driver.find_element_by_xpath(PageElements.OLDER_THAN_16_CHECKBOX_XPATH)
         sixteen_checkbox.click()
 
 
@@ -132,7 +129,7 @@ class webFunc:
         """
         Click on "I am less that 18 year old" check box in etgar22.co.il
         """
-        teen_checkbox = self.driver.find_element_by_xpath('//label[@id="tfa_90-L"]')
+        teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
         teen_checkbox.click()
         
 
@@ -193,18 +190,6 @@ class webFunc:
             emailfunc.signup_failed_email(service, row_failed)
 
 
-    def petitions_send(self):
-        """
-        Click on "Submit/Continue" button in animals-now.org's petitions
-        """
-        send_button = self.driver.find_element_by_css_selector('div #form_petition-form button.frm_button_submit')
-        # scrolling into view doesn't work in https://animals-now.org/investigations/turkey/?utm_source=test&utm_medium=test&utm_campaign=test
-        # try it - open the console and type this:
-        #   var elem = document.querySelector('div #form_petition-form button.frm_button_submit')
-        #   elem.scrollIntoView(true);
-        # scroll_into_view(self.driver, send_button)
-        send_button.click()
-
     def check_in_gmail(self, email_list, petitions_list):
         """
         When petition registration success, the user's details transfer to salesforce. if salesforce receive
@@ -235,6 +220,18 @@ class webFunc:
             petitions_index += 1
             
 
+    def petitions_send(self):
+        """
+        Click on "Submit/Continue" button in animals-now.org's petitions
+        """
+        send_button = self.driver.find_element_by_css_selector(PageElements.PETITIONS_FORM_SEND_BUTTON_CSS_SELECTOR)
+        # scrolling into view doesn't work in https://animals-now.org/investigations/turkey/?utm_source=test&utm_medium=test&utm_campaign=test
+        # try it - open the console and type this:
+        #   var elem = document.querySelector('div #form_petition-form button.frm_button_submit')
+        #   elem.scrollIntoView(true);
+        # scroll_into_view(self.driver, send_button)
+        send_button.click()
+
     def add_my_name_to_petition(self):
         """
         Some of the times in some petition "add my name to petition" button appear before we can sign up
@@ -242,7 +239,7 @@ class webFunc:
         REMOVE THIS FUNCTION WHEN THE A/B TEST IS DONE.
         """
         try:
-            button = self.driver.find_element_by_css_selector('div.add-me-to-petition-button a.fl-button')
+            button = self.driver.find_element_by_css_selector(PageElements.ADD_MY_NAME_TO_PETITION_BUTTON_CSS_SELECTOR)
             button.click()
         except:
             print('Add my name to petition button not found, this button appear sometimes because its A/B test')
@@ -257,13 +254,13 @@ class webFunc:
         """
         Choose random birthday from the scroll in animals-now.org's petitions
         """
-        if self.driver.find_element_by_xpath('//select[@placeholder="שנת לידה"]'):
-            age_box = self.driver.find_element_by_xpath('//select[@placeholder="שנת לידה"]')
+        if self.driver.find_element_by_xpath(PageElements.PETITION_HEBREW_AGE_BOX_XPATH):
+            age_box = self.driver.find_element_by_xpath(PageElements.PETITION_HEBREW_AGE_BOX_XPATH)
         else:
-            age_box = self.driver.find_element_by_xpath('//select[@placeholder="Year of Birth"]')
+            age_box = self.driver.find_element_by_xpath(PageElements.PETITION_ENGLISH_AGE_BOX_XPATH)
 
         age_box.click()
-        select_age = self.driver.find_element_by_xpath('//option[@value="{}"]'.format(randint(1930, 2004)))
+        select_age = self.driver.find_element_by_xpath(PageElements.PETITION_SELECT_AGE_SCROLL_BAR_XPATH.format(randint(1930, 2004)))
         select_age.click()
         self.year_of_birth = select_age
 
