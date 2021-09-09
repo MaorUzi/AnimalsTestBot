@@ -6,7 +6,7 @@ import argparse
 ##### Default Paths #####
 DEFAULT_CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
 DEFAULT_SERVICE_ACCOUNTS_CREDS_PATH = "/home/maor_animals_now_org/pytest/credentials-ServiceAccounts.json"
-DEFAULT_OAUTH2CLIENT_IDS_CREDS_PATH = "//home/maor_animals_now_org/pytest/credentials-OAuth2ClientIDs.json"
+DEFAULT_OAUTH2CLIENT_IDS_CREDS_PATH = "/home/maor_animals_now_org/pytest/credentials-OAuth2ClientIDs.json"
 DEFAULT_GMAIL_TOKEN_PATH = "/home/maor_animals_now_org/pytest/token.pickle"
 DEFAULT_ERROR_COUNTER_JSON_PATH = '/home/maor_animals_now_org/pytest/error_status.json'
 
