@@ -6,7 +6,6 @@ import json
 import Setup
 
 ERROR_COUNTER_JSON_PATH = Setup.ERROR_COUNTER_JSON_PATH
-print(ERROR_COUNTER_JSON_PATH)
 
 def create_message(sender, to, subject, message_text):
     """Create a message for an email.
