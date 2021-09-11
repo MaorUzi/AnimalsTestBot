@@ -147,7 +147,7 @@ def web_error_email(error_type, service, error, site, header):
             f.close()
     except:  # if there is trouble with the json file, the email will sent every session
         web_error_email_no_delay(service,
-                                 (str(error) + ". Also JSON file failed - no delay between emails(code problem)")
+                                 (str(error) + ". Also JSON file failed - no delay between emails(problem with reading/writing data from json file)")
                                  , site, str(header))
                     #if the site is veg send to Roni also mail
         if 'veg' in site:
