@@ -78,28 +78,66 @@ class webFunc:
         The function base on placeholder, if your form doesn't have placeholder,
         it won't work.
         """
+        print('########### Trying to send keys to all "{}" input fields ###########'.format(field))
         # Find all elements with input tag (in the html <input>....</input>)
         input_elem_list = self.driver.find_elements_by_tag_name('input')
+
+        # Number of input fields with placeholder that suitable to the given field we want to fil.
+        appropriate_input_elem_found = 0
+        num_of_fields_filled = 0
         for elem in input_elem_list:
             # Get the value of the placeholder inside input (<input>placeholder="some-value"</input>
             real_placeholder = elem.get_attribute('placeholder')
             # If any of the item inside placeholder_dict[field] are also inside the real_placeholder,
             # it will send keys to this element(field).
             if any([plc in real_placeholder for plc in PageElements.PLACEHOLDER_DICT[field]]):
+                appropriate_input_elem_found += 1
                 try:
-                    elem.send_keys(keys)
-                    print('Succeed to send keys to: "{}" (field placeholder)'.format(real_placeholder))
+                    keys_status = self.send_keys_with_validation(elem, keys)
+                    if keys_status:
+                        print('Succeed to send keys to: "{}" (field placeholder).'.format(real_placeholder))
+                        num_of_fields_filled += 1
                 except:
-                    print('Failed to send keys to: "{}" (field placeholder)'.format(real_placeholder))
+                    pass
+        print('Found {} {} input fields succeed to send keys to "{}" input fields'.format(appropriate_input_elem_found,
+                                                                                        field,
+                                                                                        num_of_fields_filled))
+        if num_of_fields_filled == 0:
+            error_msg = 'Failed to insert data to: "{}" field in form'.format(field)
+            raise Exception(error_msg)
 
+
+    def send_keys_with_validation(self, elem, keys):
+        """
+        Using selenium to send keys to input field on the website. After sending the keys to the input field, check if 
+        they arrived to there. if not, will try again. Maximum tries before failure 10 times.
+        Accept:
+        @elem - input field to send keys (selenium webpage element).
+        @keys - keys to send (string)
+        Return: True on success else False.
+        Note:
+        We use this function to insert data to forms because sometimes we sent keys to input field but it doesn't get them.
+        """
+        maximum_tries = 10
+        current_tries = 0
+        text_in_input_box = ""
+        while text_in_input_box != keys and current_tries < maximum_tries:
+            elem.clear()
+            elem.send_keys(keys)
+            text_in_input_box = elem.get_attribute('value')
+            current_tries += 1
+        if text_in_input_box == keys:
+            return True
+        return False
+
+    ################## Challenge22, Etgar22 ##################
                     
-################## Challenge22, Etgar22 ##################        
-                    
-    """
-    On challenge22 ES sometimes there is pop up that ask the user to move to the english website,
-    this method close this pop up.
-    """
+
     def close_move_to_english_website_pop_up(self):
+        """
+        On challenge22 ES sometimes there is pop up that ask the user to move to the english website,
+        this method close this pop up.
+        """
         pop_up_close_button = self.driver.find_element_by_css_selector(PageElements.MOVE_TO_EN_POP_UP_CLOSE_BUTTON_CSS_SELECTOR)
         pop_up_close_button.click()
 
@@ -138,13 +176,13 @@ class webFunc:
         
     def transferred_to_thank_you_page(self):
         """
-        Check if the bot succeeded to submit the form (by checking if the bot in thank you page)
+        Check if the bot succeeded to submit the form (by checking if the bot in thank you page).
         """
         url = self.driver.current_url
         if "thank" not in url:
             print("Current Url: ", url)
             self.driver.quit()
-            raise Failed_Submit_The_Sign_Up_Form("Didn't transferred to thank you page")
+            raise Exception("Doesn't transferred to thank you page.")
             
 ################## Petitions ##################        
     def petitions_send(self):
