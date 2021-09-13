@@ -5,7 +5,7 @@ import random
 import time
 
 # If you add website, also add it in the error_status.json that located in the server
-fish = "https://fish-MAOR-TEST-MAOR-TEST-MAOR-TEST.org.il/"
+fish = "https://fish.org.il/"
 etgar = "https://etgar22.co.il/"
 ch = "https://challenge22.com/"
 animals = "https://animals-now.org/"
