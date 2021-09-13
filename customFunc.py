@@ -22,7 +22,7 @@ class webFunc:
     def __init__(self, site):
         self.site = site
         self.first_name = "testbot" + webFunc.random_char(3)
-        self.last_name = webFunc.random_char(5) + webFunc.random_char(5)
+        self.last_name = webFunc.random_char(6)
         self.email = "test+bot"+ self.last_name + "@animals-now.org"
         self.phone = "067" + str(randint(1000000, 9999999))
         self.year_of_birth = ""
@@ -253,10 +253,12 @@ class webFunc:
         report_sheet = client.open("Report").sheet1  # open report sheet, will insert success or failure
         self.sheet = sheet
 
-        row_failed_msg = "Registration's email not found in google sheet!!!"
-        row_success_all_msg = "Sign up succeed and removed from google sheet"
-        row_remove_more_msg = "Sign up succeed but the bot removed more than one row in the google sheet!!!"
-        row_not_remove_msg = "Sign up succeed but the bot failed to remove the test email from the google sheet"
+        row_failed_msg = "The bot submitted the form but the registration's information doesn't arrived to the" \
+                         " suitable google sheet."
+        row_success_all_msg = "Sign up succeed and removed from google sheet."
+        row_remove_more_msg = "Sign up succeed but the bot removed more than one row in the google sheet. Means" \
+                              "The bot may deleted from google sheet more than the test registration."
+        row_not_remove_msg = "Sign up succeed but the bot failed to remove the test data from the google sheet."
         sign_up_sheet = client.open(self.sheet).sheet1  # open sign up form sheet
         time_now = str(datetime.today())[0:16]
         row_failed = [time_now, self.sheet, self.site, self.email, row_failed_msg]
