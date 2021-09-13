@@ -51,7 +51,8 @@ def signup_failed_email(service, row):
     service - gmail api auth
     row - list that contain information about the failure
     """
-    message_text = "Sheet\Petition: " + row[1] + "Link: " + row[2] + " Email: " + row[3] + " Reason: " + row[4]
+    message_text = "Sheet\Petition: " + row[1] + "\n" + "Link: " + row[2] + "\n" + "Email: " + row[3]\
+                   + "\n" + "Reason: " + row[4]
     sender = "me"
     subject = "Sign Up Failed"
     to_list = ["dev@animals-now.org","maor@animals-now.org"]
@@ -87,7 +88,7 @@ def web_error_email_no_delay(service, error, site, header):
     """
     Sent failure email when website test fail.
     """
-    message_text = "Error: " + error + ", Website: " + site + ", header: " + header
+    message_text = "Error: " + error + "\n" + "Website: " + site + "\n" + "header: " + header
     sender = "me"
     subject = "WebSite Error"
     to_list = ["dev@animals-now.org" ,"maor@animals-now.org"]
@@ -101,7 +102,7 @@ def web_error_email_no_delay(service, error, site, header):
 #I know its stuipd and bad code to dublicate the function
 # but I its the faster way to do that.
 def veg_error_email_no_delay_roni(service, error, site, header):
-    message_text = "Error: " + error + ", Website: " + site + ", header: " + header
+    message_text = "Error: " + error + "\n" + "Website: " + site + "\n" + "header: " + header
     sender = "me"
     subject = "WebSite Error"
     to_list = ["roni@animals-now.org"]
