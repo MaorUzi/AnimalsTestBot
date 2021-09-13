@@ -21,13 +21,12 @@ class webFunc:
 
     def __init__(self, site):
         self.site = site
-        self.first_name = "test+bot"
-        self.last_name = webFunc.random_char(5) + str(randint(1, 999))
-        self.email = self.first_name + self.last_name + "@animals-now.org"
+        self.first_name = "testbot" + webFunc.random_char(3)
+        self.last_name = webFunc.random_char(5) + webFunc.random_char(5)
+        self.email = "test+bot"+ self.last_name + "@animals-now.org"
         self.phone = "067" + str(randint(1000000, 9999999))
         self.year_of_birth = ""
         self.info = [self.first_name, self.last_name, self.email, self.phone]
-
     def start_driver(self):
         """
         Determine and start the selenium webdriver.
@@ -87,7 +86,13 @@ class webFunc:
         num_of_fields_filled = 0
         for elem in input_elem_list:
             # Get the value of the placeholder inside input (<input>placeholder="some-value"</input>
-            real_placeholder = elem.get_attribute('placeholder')
+            # Using try here because sometimes if you filled one input filled other can be remove.
+            # And because we try to fill all appropriate input boxes there might be a chance that we now
+            # try to get field(input box) that not exit anymore.
+            try:
+                real_placeholder = elem.get_attribute('placeholder')
+            except:
+                continue
             # If any of the item inside placeholder_dict[field] are also inside the real_placeholder,
             # it will send keys to this element(field).
             if any([plc in real_placeholder for plc in PageElements.PLACEHOLDER_DICT[field]]):
@@ -109,21 +114,24 @@ class webFunc:
 
     def send_keys_with_validation(self, elem, keys):
         """
-        Using selenium to send keys to input field on the website. After sending the keys to the input field, check if 
+        Using selenium to send keys to input field on the website. After sending the keys to the input field, check if
         they arrived to there. if not, will try again. Maximum tries before failure 10 times.
         Accept:
         @elem - input field to send keys (selenium webpage element).
         @keys - keys to send (string)
         Return: True on success else False.
         Note:
-        We use this function to insert data to forms because sometimes we sent keys to input field but it doesn't get them.
+        - Also in here we send char by char to the input box because sometimes the form don't accept your keys if you send
+        them as long string.
+        - We use this function to insert data to forms because sometimes we sent keys to input field but it doesn't get them.
         """
         maximum_tries = 10
         current_tries = 0
         text_in_input_box = ""
         while text_in_input_box != keys and current_tries < maximum_tries:
             elem.clear()
-            elem.send_keys(keys)
+            for char in keys:
+                elem.send_keys(char)
             text_in_input_box = elem.get_attribute('value')
             current_tries += 1
         if text_in_input_box == keys:
