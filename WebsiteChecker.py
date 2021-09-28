@@ -101,6 +101,7 @@ def test_get_request(site, failure_dict, header):
             request = requests.get(site, headers=header)
             if request.status_code == GET_REQUEST_OK_CODE:
                 failure_status = False
+                continue
             else:
                 failure_counter += 1
                 print(PRINT_TO_CONSOLE_CODE_ERROR_FAIL_MSG.format(site, request.status_code, failure_counter))
@@ -140,6 +141,7 @@ def test_get_request_respond_time(site, failure_dict, header):
                 failure_dict["LoadTimeError"][1] = TOO_MUCH_TIME_TO_LOAD_MSG.format(str(end - start)[0:4])
         else:
             failure_status = False
+            continue
         customFunc.sleep(SECONDS_TO_WAIT_BETWEEN_TRIES)
 
 
