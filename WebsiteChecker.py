@@ -5,7 +5,6 @@ from requests.exceptions import ConnectionError
 import random
 import time
 
-# If you add website, also add it in the error_status.json that located in the server
 fish = "https://fish.org.il/"
 etgar = "https://etgar22.co.il/"
 ch = "https://challenge22.com/"
@@ -27,7 +26,8 @@ haywan = 'https://hayawan.org/'
 quizzes = 'https://quizzes.anonymous.org.il/'
 shira = 'https://shirahertzanu.com/'
 
-# website to check
+
+# If you add website, also add it in the error_status.json that located in the server
 site_list = [etgar, ch, animals, anonymous, veg, live_act, fish, videos, salmon, animal, rifq,
              students, chicken, tnuva, share, cage, behemla, haywan, quizzes, shira]
 
