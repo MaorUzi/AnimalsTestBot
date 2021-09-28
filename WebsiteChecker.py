@@ -106,7 +106,7 @@ def test_get_request(site, failure_dict, header):
                 print(PRINT_TO_CONSOLE_CODE_ERROR_FAIL_MSG.format(site, request.status_code, failure_counter))
                 if failure_counter >= TRIES_BEFORE_FAILURE:
                     failure_dict['CodeError'][0] = True
-                    failure_dict['CodeError'][1] = str(request.status_code)
+                    failure_dict['CodeError'][1] = GET_REQUEST_CODE_ERROR_MSG.format(str(request.status_code))
         except ConnectionError:
             failure_counter += 1
             print(PRINT_TO_CONSOLE_CONNECTION_ERROR_FAIL_MSG.format(site, failure_counter))
