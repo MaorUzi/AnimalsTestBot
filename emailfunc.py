@@ -6,6 +6,8 @@ import json
 import Setup
 
 ERROR_COUNTER_JSON_PATH = Setup.ERROR_COUNTER_JSON_PATH
+WEBSITE_CHECKER_EMAILS_SESSION_DELAY = 1
+
 
 def create_message(sender, to, subject, message_text):
     """Create a message for an email.
@@ -134,7 +136,7 @@ def web_error_email(error_type, service, error, site, header):
             if 'veg' in site:
                 veg_error_email_no_delay_roni(service, str(error), site, str(header))
             # session to wait between each email
-            data[site][error_type] = 1
+            data[site][error_type] = WEBSITE_CHECKER_EMAILS_SESSION_DELAY
             with open(ERROR_COUNTER_JSON_PATH, 'w+') as f:
                 f.write(json.dumps(data))
             f.close()
