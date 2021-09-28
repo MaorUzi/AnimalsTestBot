@@ -90,7 +90,7 @@ def web_error_email_no_delay(service, error, site, header):
     """
     message_text = "Error: " + error + "\n" + "Website: " + site + "\n" + "header: " + header
     sender = "me"
-    subject = "WebSite Error"
+    subject = "WebSite Error - " + site
     to_list = ["dev@animals-now.org" ,"maor@animals-now.org"]
     user_id = "me"
 
@@ -104,17 +104,14 @@ def web_error_email_no_delay(service, error, site, header):
 def veg_error_email_no_delay_roni(service, error, site, header):
     message_text = "Error: " + error + "\n" + "Website: " + site + "\n" + "header: " + header
     sender = "me"
-    subject = "WebSite Error"
+    subject = "WebSite Error - " + site
     to_list = ["roni@animals-now.org"]
     user_id = "me"
     for to in to_list:
         message = create_message(sender, to, subject, message_text)
         send_message(service, user_id, message)
 
-
-
-
-
+        
 def web_error_email(error_type, service, error, site, header):
     """
     Check if email already sent in the last five sessions. if email already sent,
