@@ -62,7 +62,7 @@ GET_REQUEST_OK_CODE = 200
 GET_REQUEST_MAX_WAIT_SECONDS = 60
 # How many times to try the test before declared it as failure
 TRIES_BEFORE_FAILURE = 3
-SECONDS_TO_WAIT_BETWEEN_TRIES = 5
+SECONDS_TO_WAIT_BETWEEN_TRIES = 8
 
 # This messages will be sent in emails when error occur.
 GET_REQUEST_CODE_ERROR_MSG = 'Website returned code error number: {}\n' \
