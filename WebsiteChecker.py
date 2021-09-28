@@ -5,7 +5,7 @@ from requests.exceptions import ConnectionError
 import random
 import time
 
-# If you add a website, also add it in the error_status.json that located in the server(look in Setup.py for it's path)
+# If you add a website, also add it to the error_status.json that located in the server(look in Setup.py for it's path)
 fish = "https://fish.org.il/"
 etgar = "https://etgar22.co.il/"
 ch = "https://challenge22.com/"
