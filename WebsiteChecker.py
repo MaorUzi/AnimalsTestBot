@@ -5,6 +5,7 @@ from requests.exceptions import ConnectionError
 import random
 import time
 
+# If you add website, also add it in the error_status.json that located in the server
 fish = "https://fish.org.il/"
 etgar = "https://etgar22.co.il/"
 ch = "https://challenge22.com/"
@@ -26,8 +27,7 @@ haywan = 'https://hayawan.org/'
 quizzes = 'https://quizzes.anonymous.org.il/'
 shira = 'https://shirahertzanu.com/'
 
-
-# If you add website, also add it in the error_status.json that located in the server
+# website to check
 site_list = [etgar, ch, animals, anonymous, veg, live_act, fish, videos, salmon, animal, rifq,
              students, chicken, tnuva, share, cage, behemla, haywan, quizzes, shira]
 
@@ -62,6 +62,7 @@ GET_REQUEST_OK_CODE = 200
 GET_REQUEST_MAX_WAIT_SECONDS = 60
 # How many times to try the test before declared it as failure
 TRIES_BEFORE_FAILURE = 3
+SECONDS_TO_WAIT_BETWEEN_TRIES = 5
 
 # This messages will be sent in emails when error occur.
 GET_REQUEST_CODE_ERROR_MSG = 'Website returned code error number: {}\n' \
@@ -112,6 +113,7 @@ def test_get_request(site, failure_dict, header):
             if failure_counter >= TRIES_BEFORE_FAILURE:
                 failure_dict["ConnectionError"][0] = True
                 failure_dict["ConnectionError"][1] = CONNECTION_ERROR_MSG
+        customFunc.sleep(SECONDS_TO_WAIT_BETWEEN_TRIES)
 
 
 def test_get_request_respond_time(site, failure_dict, header):
@@ -138,6 +140,8 @@ def test_get_request_respond_time(site, failure_dict, header):
                 failure_dict["LoadTimeError"][1] = TOO_MUCH_TIME_TO_LOAD_MSG.format(str(end - start)[0:4])
         else:
             failure_status = False
+        customFunc.sleep(SECONDS_TO_WAIT_BETWEEN_TRIES)
+
 
 def test_familiar_word_and_gibberish(site, failure_dict, header):
     """
