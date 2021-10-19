@@ -3,7 +3,7 @@ import Setup
 
 UTM_TEST = Setup.UTM_TEST
 
-site = "https://challenge22.com/es/?utm_source=test&utm_medium=test&utm_campaign=test&test=UTM_TEST"
+site = "https://challenge22.com/es/?utm_source=test&utm_medium=test&utm_campaign=test&test={}".format(UTM_TEST)
 sheet = "הרשמה לאתגר 22 - SPANISH"
 
 session = customFunc.webFunc(site)
