@@ -26,7 +26,8 @@ parser.add_argument("--GmailToken", default=[DEFAULT_GMAIL_TOKEN_PATH],
 
 parser.add_argument("--ErrorCounter", default=[DEFAULT_ERROR_COUNTER_JSON_PATH],
 					nargs=1, help="Please Enter error counter json file path")
-
+parser.add_argument("--UtmTest", default=[''],
+					nargs=1, help="Please Enter test utm parmeter value")
 
 args = parser.parse_args()
 
@@ -36,4 +37,6 @@ SERVICE_ACCOUNTS_CREDS_PATH = args.ServiceAccountCreds[0]
 OAUTH2CLIENT_IDS_CREDS_PATH = args.Oauth2ClientCreds[0]
 GMAIL_TOKEN_PATH = args.GmailToken[0]
 ERROR_COUNTER_JSON_PATH = args.ErrorCounter[0]
+UTM_TEST = args.UtmTest[0]
+
 
