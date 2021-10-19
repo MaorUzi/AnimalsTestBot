@@ -1,6 +1,8 @@
 import customFunc
+import Setup
 
-site = "https://challenge22.com/?utm_source=test&utm_medium=test&utm_campaign=test"
+UTM_TEST = Setup.UTM_TEST
+site = "https://challenge22.com/?utm_source=test&utm_medium=test&utm_campaign=test&test=UTM_TEST"
 sheet = "הרשמה לאתגר 22 -  ENGLISH NEW "
 
 session = customFunc.webFunc(site)
