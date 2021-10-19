@@ -190,8 +190,8 @@ class webFunc:
         if "thank" not in url:
             print("Current Url: ", url)
             self.driver.quit()
-            raise Exception("Doesn't transferred to thank you page.")
-            
+            raise Exception("Did not transfer to thank you page.")
+        print("Successfully transferred to thank you page.")            
 ################## Petitions ##################        
     def petitions_send(self):
         """
