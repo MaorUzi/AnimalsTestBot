@@ -14,8 +14,7 @@ try:
   session.close_move_to_english_website_pop_up()
 except:
   print("Didn't close move to english website")
-session.insert_info_to_field('FirstName', session.first_name)
-session.insert_info_to_field('LastName', session.last_name)
+session.insert_info_to_field('FullName', session.first_name + ' ' + session.last_name)
 session.insert_info_to_field('Email', session.email)
 session.ch_confirm_sixteen()
 customFunc.sleep(5)
