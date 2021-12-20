@@ -188,7 +188,8 @@ class webFunc:
         
     
 #         teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
-        teen_checkbox = self.driver.find_element_by_css("#youth-age-group_0")
+
+        teen_checkbox = self.driver.find_element_by_xpath('//input[@id="youth-age-group_0"]')
         teen_checkbox.click()
         
         
