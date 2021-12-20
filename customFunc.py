@@ -23,11 +23,10 @@ class webFunc:
         self.site = site
         self.first_name = "testbot" + webFunc.random_char(3)
         self.last_name = webFunc.random_char(6)
-        self.name = self.first_name + " " + self.last_name
         self.email = "test+bot"+ self.last_name + "@animals-now.org"
         self.phone = "067" + str(randint(1000000, 9999999))
         self.year_of_birth = ""
-        self.info = [self.first_name, self.last_name, self.name, self.email, self.phone]
+        self.info = [self.first_name, self.last_name, self.email, self.phone]
     def start_driver(self):
         """
         Determine and start the selenium webdriver.
