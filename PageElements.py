@@ -42,10 +42,10 @@ xPath of "I am 16 or older and have read the Terms of Use" check box in challeng
 OLDER_THAN_16_CHECKBOX_XPATH = '//label[@id="tfa_93-L"]'
 
 """
-xPath of "I am less that 18 year old" check box in etgar22.co.il
+xPath of "מסלול הנוער" check box in etgar22.co.il
 """
 
-TEEN_CHECKBOX_XPATH = '//label[@id="tfa_90-L"]'
+TEEN_CHECKBOX_XPATH = '//label[@for="youth-age-group_0"]'
 
 
 ####################### Animals Petitions #######################
