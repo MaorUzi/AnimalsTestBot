@@ -178,7 +178,17 @@ class webFunc:
         """
         Click on "I am less that 18 year old" check box in etgar22.co.il
         """
-        teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
+        
+#         element = self.driver.find_element_by_css('div[class*="loadingWhiteBox"]')
+#         self.driver.execute_script("arguments[0].click();", element)
+
+#element = driver.find_element_by_css('div[class*="loadingWhiteBox"]')
+#webdriver.ActionChains(driver).move_to_element(element ).click(element ).perform()
+
+        
+    
+#         teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
+        teen_checkbox = self.driver.find_element_by_css("#youth-age-group_0")
         teen_checkbox.click()
         
         
