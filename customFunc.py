@@ -1,4 +1,5 @@
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 import gspread
 
@@ -43,7 +44,9 @@ class webFunc:
     #    chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--ignore-certificate-errors')
-        self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+        #self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+
 
     def url(self):
         """
@@ -179,17 +182,7 @@ class webFunc:
         Click on "I am less that 18 year old" check box in etgar22.co.il
         """
         
-#         element = self.driver.find_element_by_css('div[class*="loadingWhiteBox"]')
-#         self.driver.execute_script("arguments[0].click();", element)
-
-#element = driver.find_element_by_css('div[class*="loadingWhiteBox"]')
-#webdriver.ActionChains(driver).move_to_element(element ).click(element ).perform()
-
-        
-    
-#         teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
-
-        teen_checkbox = self.driver.find_element_by_xpath('//input[@id="youth-age-group_0"]')
+        teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
         teen_checkbox.click()
         
         

@@ -32,7 +32,7 @@ CHALLENGES_FORM_SEND_BUTTON_ID = 'tfa_148'
 xPath of "I accept the Term of use" check box in etgar22.co.il
 """
 
-ACCEPT_TERM_CHECKBOX_XPATH = '//label[@id="tfa_168-L"]'
+ACCEPT_TERM_CHECKBOX_XPATH = '//input[@class="calc-USETERMS"]'
 
 
 """
