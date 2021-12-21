@@ -1,4 +1,5 @@
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 import gspread
 
@@ -8,26 +9,29 @@ from random import randint
 from time import sleep
 
 import emailfunc
+import PageElements
+import Setup
 import sys
 sys.path.append('/home/maor_animals_now_org/pytest')
 import auth
 
 
+CHROMEDRIVER_PATH = Setup.CHROMEDRIVER_PATH
+
 class webFunc:
 
     def __init__(self, site):
         self.site = site
-        self.first_name = "test+bot"
-        self.last_name = webFunc.random_char(5) + str(randint(1, 999))
-        self.email = self.first_name + self.last_name + "@animals-now.org"
+        self.first_name = "testbot" + webFunc.random_char(3)
+        self.last_name = webFunc.random_char(6)
+        self.email = "test+bot"+ self.last_name + "@animals-now.org"
         self.phone = "067" + str(randint(1000000, 9999999))
+        self.year_of_birth = ""
         self.info = [self.first_name, self.last_name, self.email, self.phone]
-
     def start_driver(self):
         """
         Determine and start the selenium webdriver.
         """
-        CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
         chrome_options = Options()
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--window-size=1920,1080") 
@@ -37,15 +41,20 @@ class webFunc:
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-gpu')
-   #     chrome_options.add_argument('--disable-dev-shm-usage')
+    #    chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--ignore-certificate-errors')
-        self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+        #self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+
 
     def url(self):
         """
         Navigate to the site address that accepted upon creating instance.
         """
+        # TODO: this is not the right way to visit a URL. should be:
+        #       self.driver.get(self.site)
+        #       Note that this affects all scripts, so must run all tests when
         self.driver.execute_script("window.location = '{}'".format(self.site))
 
     @staticmethod
@@ -71,54 +80,100 @@ class webFunc:
         The function base on placeholder, if your form doesn't have placeholder,
         it won't work.
         """
-
-        placeholder_dict = {'FirstName': ['פרטי', 'First', 'first', 'Nombre', 'nombre'],
-                            'LastName': ['משפחה', 'Last', 'last', 'Apellido', 'apellido'],
-                            'Email': ['אימייל', 'מייל', 'דוא"ל', 'דואר אלקטרוני', "דוא'ל", 'Email', 'email',
-                                      'Correo electrónico', 'correo electrónico'],
-                            'Phone': ['טלפון', 'נייד', 'Phone', 'phone', 'Mobile', 'mobile', 'Teléfono', 'teléfono',
-                                      'Móvil', 'móvil'],
-                            'Age': ['גיל', 'Age', 'age', 'Años', 'años'],
-                            'Birthday': ['שנת לידה', 'Birthday', 'birthday', 'Cumpleaños', 'cumpleaños'],
-                            'FullName': ['שם מלא', 'שם', 'Full name', 'full name', 'Name', 'name',
-                                         'Nombre completo', 'nombre completo', 'Nombre', 'nombre'],
-                            }
-
+        print('########### Trying to send keys to all "{}" input fields ###########'.format(field))
         # Find all elements with input tag (in the html <input>....</input>)
         input_elem_list = self.driver.find_elements_by_tag_name('input')
+
+        # Number of input fields with placeholder that suitable to the given field we want to fil.
+        appropriate_input_elem_found = 0
+        num_of_fields_filled = 0
         for elem in input_elem_list:
             # Get the value of the placeholder inside input (<input>placeholder="some-value"</input>
-            real_placeholder = elem.get_attribute('placeholder')
+            # Using try here because sometimes if you filled one input filled other can be remove.
+            # And because we try to fill all appropriate input boxes there might be a chance that we now
+            # try to get field(input box) that not exit anymore.
+            try:
+                real_placeholder = elem.get_attribute('placeholder')
+            except:
+                continue
             # If any of the item inside placeholder_dict[field] are also inside the real_placeholder,
             # it will send keys to this element(field).
-            if any([plc in real_placeholder for plc in placeholder_dict[field]]):
+            if any([plc in real_placeholder for plc in PageElements.PLACEHOLDER_DICT[field]]):
+                appropriate_input_elem_found += 1
                 try:
-                    elem.send_keys(keys)
-                    print('Succeed to send keys to: "{}" (field placeholder)'.format(real_placeholder))
+                    keys_status = self.send_keys_with_validation(elem, keys)
+                    if keys_status:
+                        print('Succeed to send keys to: "{}" (field placeholder).'.format(real_placeholder))
+                        num_of_fields_filled += 1
                 except:
-                    print('Failed to send keys to: "{}" (field placeholder)'.format(real_placeholder))
+                    pass
+        print('Found {} {} input fields succeed to send keys to "{}" input fields'.format(appropriate_input_elem_found,
+                                                                                        field,
+                                                                                        num_of_fields_filled))
+        if num_of_fields_filled == 0:
+            error_msg = 'Failed to insert data to: "{}" field in form'.format(field)
+            raise Exception(error_msg)
 
+
+    def send_keys_with_validation(self, elem, keys):
+        """
+        Using selenium to send keys to input field on the website. After sending the keys to the input field, check if
+        they arrived to there. if not, will try again. Maximum tries before failure 10 times.
+        Accept:
+        @elem - input field to send keys (selenium webpage element).
+        @keys - keys to send (string)
+        Return: True on success else False.
+        Note:
+        - Also in here we send char by char to the input box because sometimes the form don't accept your keys if you send
+        them as long string.
+        - We use this function to insert data to forms because sometimes we sent keys to input field but it doesn't get them.
+        """
+        maximum_tries = 10
+        current_tries = 0
+        text_in_input_box = ""
+        while text_in_input_box != keys and current_tries < maximum_tries:
+            elem.clear()
+            for char in keys:
+                elem.send_keys(char)
+            text_in_input_box = elem.get_attribute('value')
+            current_tries += 1
+        if text_in_input_box == keys:
+            return True
+        return False
+
+    ################## Challenge22, Etgar22 ##################
+                    
+
+    def close_move_to_english_website_pop_up(self):
+        """
+        On challenge22 ES sometimes there is pop up that ask the user to move to the english website,
+        this method close this pop up.
+        """
+        pop_up_close_button = self.driver.find_element_by_css_selector(PageElements.MOVE_TO_EN_POP_UP_CLOSE_BUTTON_CSS_SELECTOR)
+        pop_up_close_button.click()
 
     def send(self):
         """
         Click on "Submit/Continue" button in etgar22.co.il,in challenge22.com and in challenge22.com/es
         """
-        send_button = self.driver.find_element_by_id('tfa_148')
+        send_button = self.driver.find_element_by_id(PageElements.CHALLENGES_FORM_SEND_BUTTON_ID)
         send_button.click()
 
     def etgarconfirm(self):
         """
         Click on "I accept the Term of use" check box in etgar22.co.il
         """
-        confrim_checkbox = self.driver.find_element_by_xpath('//label[@id="tfa_168-L"]')
-        confrim_checkbox.click()
+        confirm_checkbox = self.driver.find_element_by_xpath(PageElements.ACCEPT_TERM_CHECKBOX_XPATH)
+        # this function (etgarconfirm) is used by several tests, in some it helps to scroll_into_view and in some it
+        # fails the test (i.e Etgar22FormTest.py) scroll_into_view(self.driver, confirm_checkbox)
+        confirm_checkbox.click()
 
     def ch_confirm_sixteen(self):
         """
         Click on "I am 16 or older and have read the Terms of Use" check box
         in challenge22.com and in challenge22.com/es
         """
-        sixteen_checkbox = self.driver.find_element_by_xpath('//label[@id="tfa_93-L"]')
+        sixteen_checkbox = self.driver.find_element_by_xpath(PageElements.OLDER_THAN_16_CHECKBOX_XPATH)
         sixteen_checkbox.click()
 
 
@@ -126,10 +181,68 @@ class webFunc:
         """
         Click on "I am less that 18 year old" check box in etgar22.co.il
         """
-        teen_checkbox = self.driver.find_element_by_xpath('//label[@id="tfa_90-L"]')
+        
+        teen_checkbox = self.driver.find_element_by_xpath(PageElements.TEEN_CHECKBOX_XPATH)
         teen_checkbox.click()
         
+        
+    def transferred_to_thank_you_page(self):
+        """
+        Check if the bot succeeded to submit the form (by checking if the bot in thank you page).
+        """
+        url = self.driver.current_url
+        if "thank" not in url:
+            print("Current Url: ", url)
+            self.driver.quit()
+            raise Exception("Did not transfer to thank you page.")
+        print("Successfully transferred to thank you page.")            
+################## Petitions ##################        
+    def petitions_send(self):
+        """
+        Click on "Submit/Continue" button in animals-now.org's petitions
+        """
+        send_button = self.driver.find_element_by_css_selector(PageElements.PETITIONS_FORM_SEND_BUTTON_CSS_SELECTOR)
+        # scrolling into view doesn't work in https://animals-now.org/investigations/turkey/?utm_source=test&utm_medium=test&utm_campaign=test
+        # try it - open the console and type this:
+        #   var elem = document.querySelector('div #form_petition-form button.frm_button_submit')
+        #   elem.scrollIntoView(true);
+        # scroll_into_view(self.driver, send_button)
+        send_button.click()
 
+    def add_my_name_to_petition(self):
+        """
+        Some of the times in some petition "add my name to petition" button appear before we can sign up
+        to the petition, this function click on this button.
+        REMOVE THIS FUNCTION WHEN THE A/B TEST IS DONE.
+        """
+        try:
+            button = self.driver.find_element_by_css_selector(PageElements.ADD_MY_NAME_TO_PETITION_BUTTON_CSS_SELECTOR)
+            button.click()
+        except:
+            print('Add my name to petition button not found, this button appear sometimes because its A/B test')
+
+
+    def scroll_into_view(driver, element):
+        print("scrolling into view element with id " + element.id)
+        driver.execute_script("arguments[0].scrollIntoView(true);", element)
+
+
+    def petitions_age(self):
+        """
+        Choose random birthday from the scroll in animals-now.org's petitions
+        """
+        if self.driver.find_element_by_xpath(PageElements.PETITION_HEBREW_AGE_BOX_XPATH):
+            age_box = self.driver.find_element_by_xpath(PageElements.PETITION_HEBREW_AGE_BOX_XPATH)
+        else:
+            age_box = self.driver.find_element_by_xpath(PageElements.PETITION_ENGLISH_AGE_BOX_XPATH)
+
+        age_box.click()
+        select_age = self.driver.find_element_by_xpath(PageElements.PETITION_SELECT_AGE_SCROLL_BAR_XPATH.format(randint(1930, 2004)))
+        select_age.click()
+        self.year_of_birth = select_age
+        
+################## Check if sign up in sheets/gmail ##################        
+     
     def check_in_sheets(self, sheet):
         """
         Some of the signed ups transfer to google sheet, this function check if the registration arrived to
@@ -144,10 +257,12 @@ class webFunc:
         report_sheet = client.open("Report").sheet1  # open report sheet, will insert success or failure
         self.sheet = sheet
 
-        row_failed_msg = "Registration's email not found in google sheet!!!"
-        row_success_all_msg = "Sign up succeed and removed from google sheet"
-        row_remove_more_msg = "Sign up succeed but the bot removed more than one row in the google sheet!!!"
-        row_not_remove_msg = "Sign up succeed but the bot failed to remove the test email from the google sheet"
+        row_failed_msg = "The bot submitted the form but the registration's information doesn't arrived to the" \
+                         " suitable google sheet."
+        row_success_all_msg = "Sign up succeed and removed from google sheet."
+        row_remove_more_msg = "Sign up succeed but the bot removed more than one row in the google sheet. Means" \
+                              "The bot may deleted from google sheet more than the test registration."
+        row_not_remove_msg = "Sign up succeed but the bot failed to remove the test data from the google sheet."
         sign_up_sheet = client.open(self.sheet).sheet1  # open sign up form sheet
         time_now = str(datetime.today())[0:16]
         row_failed = [time_now, self.sheet, self.site, self.email, row_failed_msg]
@@ -187,13 +302,6 @@ class webFunc:
             emailfunc.signup_failed_email(service, row_failed)
 
 
-    def petitions_send(self):
-        """
-        Click on "Submit/Continue" button in animals-now.org's petitions
-        """
-        send_button = self.driver.find_element_by_css_selector('div #form_petition-form button.frm_button_submit')
-        send_button.click()
-
     def check_in_gmail(self, email_list, petitions_list):
         """
         When petition registration success, the user's details transfer to salesforce. if salesforce receive
@@ -222,21 +330,7 @@ class webFunc:
             if num_emails_received != 1:
                 emailfunc.signup_failed_email(service, row_status)
             petitions_index += 1
-            
 
-    def add_my_name_to_petition(self):
-        """
-        Some of the times in some petition "add my name to petition" button appear before we can sign up
-        to the petition, this function click on this button.
-        REMOVE THIS FUNCTION WHEN THE A/B TEST IS DONE.
-        """
-        try:
-            button = self.driver.find_element_by_css_selector('div.add-me-to-petition-button a.fl-button')
-            button.click()
-        except:
-            print('Add my name to petition button not found, this button appear sometimes because its A/B test')
-         
-    
 #     def healthissue(self):
 #         """
 #         Sign ups to challenges's websites with random health.
@@ -301,4 +395,4 @@ class webFunc:
 #         age_box = self.driver.find_element_by_xpath('//select[@placeholder="שנת לידה"]')
 #         age_box.click()
 #         select_age = self.driver.find_element_by_xpath('//option[@value="{}"]'.format(randint(1930, 2004)))
-#         select_age.click()            
+#         select_age.click()

@@ -1,18 +1,26 @@
 import customFunc
+import Setup
 
-site = "https://challenge22.com/es/?utm_source=test&utm_medium=test&utm_campaign=test"
+UTM_TEST = Setup.UTM_TEST
+
+site = "https://challenge22.com/es/?utm_source=test&utm_medium=test&utm_campaign=test&test={}".format(UTM_TEST)
 sheet = "הרשמה לאתגר 22 - SPANISH"
 
 session = customFunc.webFunc(site)
 session.start_driver()
 session.url()
-customFunc.sleep(6)
-session.insert_info_to_field('FirstName', session.first_name)
-session.insert_info_to_field('LastName', session.last_name)
+customFunc.sleep(10)
+try:
+  session.close_move_to_english_website_pop_up()
+except:
+  print("Didn't close move to english website")
+session.insert_info_to_field('FullName', session.first_name + ' ' + session.last_name)
 session.insert_info_to_field('Email', session.email)
-session.insert_info_to_field('Phone', session.phone)
 session.ch_confirm_sixteen()
+customFunc.sleep(5)
 session.send()
+customFunc.sleep(10)
+session.transferred_to_thank_you_page()
 session.driver.quit()
 
 customFunc.sleep(600)
