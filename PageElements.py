@@ -1,3 +1,6 @@
+"""
+This section contains css selector for elements in our websites.
+"""
 PLACEHOLDER_DICT = {'FirstName': ['פרטי', 'First', 'first', 'Nombre', 'nombre'],
                     'LastName': ['משפחה', 'Last', 'last', 'Apellido', 'apellido'],
                     'Email': ['אימייל', 'מייל', 'דוא"ל', 'דואר אלקטרוני', "דוא'ל", 'Email', 'email',

@@ -1,5 +1,9 @@
-import customFunc
-import emailfunc
+"""
+This section check our websites availability. Check for get requests response, proper texts visibility (make sure the texts
+is not gibberish) and check that our websites contains some familiar words that must appear in each page).
+"""
+import WebsitesController
+import EmailSender
 import requests
 from requests.exceptions import ConnectionError
 import random
@@ -64,7 +68,7 @@ GET_REQUEST_MAX_WAIT_SECONDS = 60
 TRIES_BEFORE_FAILURE = 3
 SECONDS_TO_WAIT_BETWEEN_TRIES = 8
 
-# This messages will be sent in emails when error occur.
+# This messages will be send in emails when error occur.
 GET_REQUEST_CODE_ERROR_MSG = 'Website returned code error number: {}\n' \
                              'If you not familiar with this code error please google it,' \
                              'also please make sure the website working well.'
@@ -114,7 +118,7 @@ def test_get_request(site, failure_dict, header):
             if failure_counter >= TRIES_BEFORE_FAILURE:
                 failure_dict["ConnectionError"][0] = True
                 failure_dict["ConnectionError"][1] = CONNECTION_ERROR_MSG
-        customFunc.sleep(SECONDS_TO_WAIT_BETWEEN_TRIES)
+        WebsitesController.sleep(SECONDS_TO_WAIT_BETWEEN_TRIES)
 
 
 def test_get_request_respond_time(site, failure_dict, header):
@@ -142,7 +146,7 @@ def test_get_request_respond_time(site, failure_dict, header):
         else:
             failure_status = False
             continue
-        customFunc.sleep(SECONDS_TO_WAIT_BETWEEN_TRIES)
+        WebsitesController.sleep(SECONDS_TO_WAIT_BETWEEN_TRIES)
 
 
 def test_familiar_word_and_gibberish(site, failure_dict, header):
@@ -181,33 +185,33 @@ def send_emails_on_failure(site, failure_dict, header, service):
     If email was not send it decrease the counter by 1.
     """
     if failure_dict["CodeError"][0]:
-        emailfunc.web_error_email('CodeError', service, failure_dict["CodeError"][1], site, str(header))
+        EmailSender.web_error_email('CodeError', service, failure_dict["CodeError"][1], site, str(header))
     else:
-        emailfunc.reset_error_counter('CodeError', service, site)
+        EmailSender.reset_error_counter('CodeError', service, site)
 
     if failure_dict["ConnectionError"][0]:
-        emailfunc.web_error_email('ConnectionError', service, failure_dict["ConnectionError"][1], site, str(header))
+        EmailSender.web_error_email('ConnectionError', service, failure_dict["ConnectionError"][1], site, str(header))
     else:
-        emailfunc.reset_error_counter('ConnectionError', service, site)
+        EmailSender.reset_error_counter('ConnectionError', service, site)
 
     if failure_dict["LoadTimeError"][0]:
-        emailfunc.web_error_email('LoadTimeError', service, failure_dict["LoadTimeError"][1], site, str(header))
+        EmailSender.web_error_email('LoadTimeError', service, failure_dict["LoadTimeError"][1], site, str(header))
     else:
-        emailfunc.reset_error_counter('LoadTimeError', service, site)
+        EmailSender.reset_error_counter('LoadTimeError', service, site)
 
     if failure_dict["FamiliarWordError"][0]:
-        emailfunc.web_error_email('FamiliarWordError', service, failure_dict["FamiliarWordError"][1], site, str(header))
+        EmailSender.web_error_email('FamiliarWordError', service, failure_dict["FamiliarWordError"][1], site, str(header))
     else:
-        emailfunc.reset_error_counter('FamiliarWordError', service, site)
+        EmailSender.reset_error_counter('FamiliarWordError', service, site)
 
     if failure_dict["GibberishError"][0]:
-        emailfunc.web_error_email('GibberishError', service, failure_dict["GibberishError"][1], site, str(header))
+        EmailSender.web_error_email('GibberishError', service, failure_dict["GibberishError"][1], site, str(header))
     else:
-        emailfunc.reset_error_counter('GibberishError', service, site)
+        EmailSender.reset_error_counter('GibberishError', service, site)
 
 
 def test_run():
-    service = customFunc.auth.get_service_gmail()
+    service = WebsitesController.Autn.get_service_gmail()
     for site in site_list:
         header = random.choice(header_list)
         failure_dict = {"CodeError": [False, ''],
@@ -219,6 +223,6 @@ def test_run():
         test_get_request_respond_time(site, failure_dict, header)
         test_familiar_word_and_gibberish(site, failure_dict, header)
         send_emails_on_failure(site, failure_dict, header, service)
-        customFunc.sleep(1)
+        WebsitesController.sleep(1)
 
 test_run()
