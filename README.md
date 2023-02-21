@@ -1,8 +1,10 @@
 # AnimalsTestBot
 This repo contains tests that check our website functionality and availability.
+
 Functionality - checks that our forms: Etgar22, Challenge22 and all of our petitions are work correctly. Submit
 a random data to each form and make sure the data transferred to the databases and the suitable actions occurred (like
 sending an email to the email we used when we submit the form).
+
 Availability - checks:
 1. websites response to get request with the correct response code.
 2. websites present texts in proper way (search for gibberish symbols).
